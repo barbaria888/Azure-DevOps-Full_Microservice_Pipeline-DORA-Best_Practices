@@ -1,0 +1,51 @@
+# templates/ci/build-dotnet.yml
+parameters:
+  - name: projectPath
+    type: string
+  - name: dockerfilePath
+    type: string
+  - name: imageRepository
+    type: string
+  - name: runTests
+    type: boolean
+    default: true
+
+steps:
+  - task: UseDotNet@2
+    displayName: 'Use .NET SDK'
+    inputs:
+      packageType: 'sdk'
+      version: $(dotnetVersion)
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Restore'
+    inputs:
+      command: 'restore'
+      projects: '${{ parameters.projectPath }}'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Build'
+    inputs:
+      command: 'build'
+      projects: '${{ parameters.projectPath }}'
+      arguments: '--configuration $(buildConfiguration) --no-restore'
+
+  - ${{ if eq(parameters.runTests, true) }}:
+    - task: DotNetCoreCLI@2
+      displayName: 'Test'
+      inputs:
+        command: 'test'
+        projects: '**/*Tests/*.csproj'
+        arguments: '--configuration $(buildConfiguration) --no-build --collect:"XPlat Code Coverage"'
+
+  - task: Docker@2
+    displayName: 'Build Docker image'
+    inputs:
+      containerRegistry: $(dockerRegistryServiceConnection)
+      repository: ${{ parameters.imageRepository }}
+      command: 'build'
+      Dockerfile: ${{ parameters.dockerfilePath }}
+      tags: |
+        $(imageTag)
+        latest
+      arguments: '--build-arg BUILD_CONFIGURATION=$(buildConfiguration)'

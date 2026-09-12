@@ -1,0 +1,24 @@
+# templates/security/trivy-scan.yml
+parameters:
+  - name: imageRepository
+    type: string
+  - name: failOnSeverity
+    type: string
+    default: ''
+
+steps:
+  - script: |
+      curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+      trivy image --exit-code 1 --severity ${{ parameters.failOnSeverity }} \
+        --format table \
+        --output trivy-report.txt \
+        $(containerRegistry)/${{ parameters.imageRepository }}:$(imageTag)
+    displayName: 'Trivy Container Scan'
+    continueOnError: true            # set true if you only want soft-fail
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Trivy Report'
+    inputs:
+      targetPath: 'trivy-report.txt'
+      artifact: 'trivy-${{ parameters.imageRepository }}'
+    condition: always()

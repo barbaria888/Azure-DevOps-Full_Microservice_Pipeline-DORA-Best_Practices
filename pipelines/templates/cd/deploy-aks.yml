@@ -1,0 +1,26 @@
+# templates/cd/deploy-aks.yml
+parameters:
+  - name: imageRepository
+    type: string
+  - name: deploymentName
+    type: string
+  - name: containerName
+    type: string
+  - name: namespace
+    type: string
+    default: 'shopping'
+
+steps:
+  - task: KubernetesManifest@1
+    displayName: 'Deploy to AKS'
+    inputs:
+      action: 'deploy'
+      connectionType: 'azureResourceManager'
+      azureSubscriptionConnection: $(aksServiceConnection)
+      azureResourceGroup: '$(aksResourceGroup)'      # add this variable
+      kubernetesCluster: '$(aksClusterName)'              # add this variable
+      namespace: ${{ parameters.namespace }}
+      manifests: |
+        k8s/${{ parameters.deploymentName }}.yml
+      containers: |
+        $(containerRegistry)/${{ parameters.imageRepository }}:$(imageTag)

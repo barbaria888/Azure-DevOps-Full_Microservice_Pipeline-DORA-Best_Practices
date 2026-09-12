@@ -2,84 +2,78 @@
 # Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
+# shoppingapi-pipeline.yaml
 trigger:
-    branches:
-      include:
+  branches:
+    include:
       - main
-    paths:
-      include:
-      - Shopping/Shopping.API/*
-      - aks/shoppingapi.yaml
+      - develop
+  paths:
+    include:
+      - src/Services/Shopping.API/**
+      - pipelines/**
 
-resources:
-- repo: self
+pr:
+  branches:
+    include:
+      - main
+      - develop
 
 variables:
-
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'e2bd5050-0b04-449c-8cd9-9367bbf7b47e'
-  imageRepository: 'shoppingapi'
-  containerRegistry: 'shoppingacr.azurecr.io'
-  dockerfilePath: 'Shopping/Shopping.API/Dockerfile'
-  tag: '$(Build.BuildId)'
-  imagePullSecret: 'shoppingacr20662ab5-auth'
-
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
-  
+  - template: templates/common/variables.yml
+  - name: imageRepository
+    value: 'shoppingapi'
+  - name: projectPath
+    value: 'src/Services/Shopping.API/Shopping.API.csproj'   # adjust
+  - name: dockerfilePath
+    value: 'src/Services/Shopping.API/Dockerfile'             # adjust
 
 stages:
-- stage: Build
-  displayName: Build stage
-  jobs:  
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        buildContext: $(Build.SourcesDirectory)/Shopping
-        tags: |
-          $(tag)
-          
-    - upload: aks
-      artifact: aks
+  - stage: CI
+    displayName: 'Build, Test & Scan'
+    jobs:
+      - job: BuildAndScan
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - template: templates/ci/build-dotnet.yml
+            parameters:
+              projectPath: $(projectPath)
+              dockerfilePath: $(dockerfilePath)
+              imageRepository: $(imageRepository)
+              runTests: true
 
-- stage: Deploy
-  displayName: Deploy stage
-  dependsOn: Build
+          - template: templates/security/trivy-scan.yml
+            parameters:
+              imageRepository: $(imageRepository)
+              failOnSeverity: 'HIGH,CRITICAL'
 
-  jobs:
-  - deployment: Deploy
-    displayName: Deploy
-    pool:
-      vmImage: $(vmImageName)
-    environment: 'aspnetrunrundevops.default'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: KubernetesManifest@0
-            displayName: Create imagePullSecret
+          - task: Docker@2
+            displayName: 'Push image to ACR'
             inputs:
-              action: createSecret
-              secretName: $(imagePullSecret)
-              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
-              
-          - task: KubernetesManifest@0
-            displayName: Deploy to Kubernetes cluster
-            inputs:
-              action: deploy
-              manifests: |
-                $(Pipeline.Workspace)/aks/shoppingapi.yaml
-              imagePullSecrets: |
-                $(imagePullSecret)
-              containers: |
-                $(containerRegistry)/$(imageRepository):$(tag)
+              containerRegistry: $(dockerRegistryServiceConnection)
+              repository: $(imageRepository)
+              command: 'push'
+              tags: |
+                $(imageTag)
+                latest
 
+  - stage: CD
+    displayName: 'Deploy to AKS'
+    dependsOn: CI
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: Deploy
+        environment: 'dev'                    # create this environment in Azure DevOps
+        pool:
+          vmImage: 'ubuntu-latest'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: templates/cd/deploy-aks.yml
+                  parameters:
+                    imageRepository: $(imageRepository)
+                    deploymentName: 'shoppingapi'
+                    containerName: 'shoppingapi'
+                    namespace: $(aksNamespace)
