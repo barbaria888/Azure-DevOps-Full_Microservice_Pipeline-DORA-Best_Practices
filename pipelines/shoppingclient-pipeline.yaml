@@ -1,3 +1,4 @@
+# shoppingclient-pipeline.yaml
 trigger:
   branches:
     include:
@@ -16,31 +17,22 @@ pr:
 
 variables:
   - template: templates/common/variables.yml
-
   - name: imageRepository
     value: 'shoppingclient'
-
   - name: projectPath
     value: 'Shopping/Shopping.Client/Shopping.Client.csproj'
-
   - name: dockerfilePath
     value: 'Shopping/Shopping.Client/Dockerfile'
 
 stages:
-
   - stage: CI
     displayName: 'Build, Test & Scan'
-
     jobs:
-
       - job: BuildAndScan
         displayName: 'Build, Test & Security Scan'
-
         pool:
           vmImage: 'ubuntu-latest'
-
         steps:
-
           - template: templates/ci/build-dotnet.yml
             parameters:
               projectPath: $(projectPath)
@@ -62,3 +54,25 @@ stages:
               tags: |
                 $(imageTag)
                 latest
+
+  - stage: CD
+    displayName: 'Deploy to Azure Kubernetes Service'
+    dependsOn: CI
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: Deploy
+        displayName: 'Deploy Shopping Client'
+        environment: 'dev'
+        pool:
+          vmImage: 'ubuntu-latest'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - template: templates/cd/deploy-aks.yml
+                  parameters:
+                    imageRepository: $(imageRepository)
+                    deploymentName: 'shoppingclient'
+                    containerName: 'shoppingclient'
+                    namespace: $(aksNamespace)
