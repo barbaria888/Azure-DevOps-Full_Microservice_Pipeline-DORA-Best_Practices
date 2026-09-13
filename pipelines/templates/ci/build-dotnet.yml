@@ -22,7 +22,7 @@ steps:
     displayName: 'Use .NET SDK'
     inputs:
       packageType: 'sdk'
-      version: $(dotnetVersion)
+      version: '8.0.x'
 
   # Restore
   - task: DotNetCoreCLI@2
