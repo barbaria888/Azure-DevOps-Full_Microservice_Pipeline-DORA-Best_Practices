@@ -17,10 +17,10 @@ steps:
       action: 'deploy'
       connectionType: 'azureResourceManager'
       azureSubscriptionConnection: $(aksServiceConnection)
-      azureResourceGroup: '$(aksResourceGroup)'      # add this variable
-      kubernetesCluster: '$(aksClusterName)'              # add this variable
+      azureResourceGroup: '$(aksResourceGroup)'
+      kubernetesCluster: '$(aksClusterName)'
       namespace: ${{ parameters.namespace }}
       manifests: |
-        k8s/${{ parameters.deploymentName }}.yml
+        k8s/${{ parameters.deploymentName }}.yaml   # ← changed to .yaml
       containers: |
         $(containerRegistry)/${{ parameters.imageRepository }}:$(imageTag)
