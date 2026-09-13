@@ -61,7 +61,7 @@ stages:
             displayName: 'Push image to ACR'
             inputs:
               containerRegistry: 'Azure Container Registry'
-              repository: 'shoppingapi'
+              repository: 'shoppingclient'
               command: 'push'
               tags: |
                 $(imageTag)
