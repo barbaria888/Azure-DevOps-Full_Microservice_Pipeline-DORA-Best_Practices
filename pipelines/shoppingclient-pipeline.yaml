@@ -1,79 +1,33 @@
-# Deploy to Azure Kubernetes Service
-# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-# shoppingclient-pipeline.yaml
-# (almost identical – only change the service-specific values)
-
-trigger:
-  branches:
-    include:
-      - main
-      - develop
-  paths:
-    include:
-      - src/Web/Shopping.Client/**
-      - pipelines/**
-
-pr:
-  branches:
-    include:
-      - main
-      - develop
-
-variables:
-  - template: templates/common/variables.yml
-  - name: imageRepository
-    value: 'shoppingclient'
-  - name: projectPath
-    value: 'src/Web/Shopping.Client/Shopping.Client.csproj'   # adjust
-  - name: dockerfilePath
-    value: 'src/Web/Shopping.Client/Dockerfile'               # adjust
-
 stages:
   - stage: CI
     displayName: 'Build, Test & Scan'
+
     jobs:
       - job: BuildAndScan
+        displayName: 'Build, Test & Security Scan'
         pool:
           vmImage: 'ubuntu-latest'
+
         steps:
+
           - template: templates/ci/build-dotnet.yml
             parameters:
               projectPath: $(projectPath)
               dockerfilePath: $(dockerfilePath)
               imageRepository: $(imageRepository)
-              runTests: false          # set true if you have tests
+              runTests: false
 
           - template: templates/security/trivy-scan.yml
             parameters:
               imageRepository: $(imageRepository)
+              failOnSeverity: 'HIGH,CRITICAL'
 
           - task: Docker@2
             displayName: 'Push image to ACR'
             inputs:
-              containerRegistry: $(dockerRegistryServiceConnection)
+              containerRegistry: 'Azure Container Registry'
               repository: $(imageRepository)
               command: 'push'
               tags: |
                 $(imageTag)
                 latest
-
-  - stage: CD
-    displayName: 'Deploy to AKS'
-    dependsOn: CI
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-    jobs:
-      - deployment: Deploy
-        environment: 'dev'
-        pool:
-          vmImage: 'ubuntu-latest'
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - template: templates/cd/deploy-aks.yml
-                  parameters:
-                    imageRepository: $(imageRepository)
-                    deploymentName: 'shoppingclient'
-                    containerName: 'shoppingclient'
-                    namespace: $(aksNamespace)
