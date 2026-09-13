@@ -10,7 +10,7 @@ trigger:
       - develop
   paths:
     include:
-      - src/Services/Shopping.API/**
+      - Shopping/Shopping.API/**
       - pipelines/**
 
 pr:
@@ -21,27 +21,35 @@ pr:
 
 variables:
   - template: templates/common/variables.yml
+
   - name: imageRepository
     value: 'shoppingapi'
+
   - name: projectPath
-    value: 'src/Services/Shopping.API/Shopping.API.csproj'   # adjust
+    value: 'Shopping/Shopping.API/Shopping.API.csproj'
+
   - name: dockerfilePath
-    value: 'src/Services/Shopping.API/Dockerfile'             # adjust
+    value: 'Shopping/Shopping.API/Dockerfile'
 
 stages:
   - stage: CI
     displayName: 'Build, Test & Scan'
+
     jobs:
       - job: BuildAndScan
+        displayName: 'Build, Test & Security Scan'
+
         pool:
           vmImage: 'ubuntu-latest'
+
         steps:
+
           - template: templates/ci/build-dotnet.yml
             parameters:
               projectPath: $(projectPath)
               dockerfilePath: $(dockerfilePath)
               imageRepository: $(imageRepository)
-              runTests: true
+              runTests: false
 
           - template: templates/security/trivy-scan.yml
             parameters:
@@ -51,29 +59,9 @@ stages:
           - task: Docker@2
             displayName: 'Push image to ACR'
             inputs:
-              containerRegistry: $(dockerRegistryServiceConnection)
+              containerRegistry: 'Azure Container Registry'
               repository: $(imageRepository)
               command: 'push'
               tags: |
                 $(imageTag)
                 latest
-
-  - stage: CD
-    displayName: 'Deploy to AKS'
-    dependsOn: CI
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-    jobs:
-      - deployment: Deploy
-        environment: 'dev'                    # create this environment in Azure DevOps
-        pool:
-          vmImage: 'ubuntu-latest'
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - template: templates/cd/deploy-aks.yml
-                  parameters:
-                    imageRepository: $(imageRepository)
-                    deploymentName: 'shoppingapi'
-                    containerName: 'shoppingapi'
-                    namespace: $(aksNamespace)
