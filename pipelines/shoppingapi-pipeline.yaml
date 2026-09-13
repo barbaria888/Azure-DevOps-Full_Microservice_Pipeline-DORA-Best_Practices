@@ -60,7 +60,7 @@ stages:
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
     jobs:
       - deployment: Deploy
-        displayName: 'Deploy Shopping Client'
+        displayName: 'Deploy Shopping API'
         environment: 'dev'
         pool:
           vmImage: 'ubuntu-latest'
@@ -79,6 +79,6 @@ stages:
                 - template: templates/cd/deploy-aks.yml
                   parameters:
                     imageRepository: $(imageRepository)
-                    deploymentName: 'shoppingclient'
-                    containerName: 'shoppingclient'
-                    namespace: $(aksNamespace)
+                    deploymentName: 'shoppingapi'
+                    containerName: 'shoppingapi'
+                    namespace: $(aksNamespace)  
