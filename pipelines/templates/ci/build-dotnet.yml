@@ -1,4 +1,4 @@
-```yaml
+
 # templates/ci/build-dotnet.yml
 
 parameters:
@@ -60,4 +60,3 @@ steps:
         $(imageTag)
         latest
       arguments: '--build-arg BUILD_CONFIGURATION=$(buildConfiguration)'
-```
