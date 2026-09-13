@@ -1,16 +1,16 @@
 # templates/common/variables.yml
 variables:
   - name: dotnetVersion
-    value: '8.0.x'                    # change after your answer
+    value: '8.0.x'
   - name: buildConfiguration
     value: 'Release'
   - name: dockerRegistryServiceConnection
     value: 'ACR-Connection'           # <-- replace with your ACR service connection name
   - name: containerRegistry
-    value: 'youracr.azurecr.io'       # <-- replace
+    value: 'hardikarora.azurecr.io'       # <-- replace
   - name: aksServiceConnection
     value: 'AKS-Connection'           # <-- replace
   - name: aksNamespace
-    value: 'shopping'                 # <-- replace or make parameter
+    value: 'application'                 # <-- replace or make parameter
   - name: imageTag
     value: '$(Build.BuildId)'
