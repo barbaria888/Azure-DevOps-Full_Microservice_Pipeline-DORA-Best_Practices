@@ -14,3 +14,8 @@ variables:
     value: 'application'                 # <-- replace or make parameter
   - name: imageTag
     value: '$(Build.BuildId)'
+    # ADD THESE TWO
+  - name: aksResourceGroup
+    value: 'your-aks-resource-group'            # e.g. 'rg-aks-dev'
+  - name: aksClusterName
+    value: 'your-aks-cluster-name'              # e.g. 'aks-dev'
