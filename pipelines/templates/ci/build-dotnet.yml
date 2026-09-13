@@ -1,6 +1,3 @@
-
-# templates/ci/build-dotnet.yml
-
 parameters:
   - name: projectPath
     type: string
@@ -56,6 +53,7 @@ steps:
       repository: ${{ parameters.imageRepository }}
       command: 'build'
       Dockerfile: ${{ parameters.dockerfilePath }}
+      buildContext: '$(Build.SourcesDirectory)/Shopping'
       tags: |
         $(imageTag)
         latest
