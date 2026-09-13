@@ -8,7 +8,7 @@ parameters:
     type: string
   - name: namespace
     type: string
-    default: 'shopping'
+    default: 'application'
 
 steps:
   - task: KubernetesManifest@1
@@ -21,6 +21,6 @@ steps:
       kubernetesCluster: '$(aksClusterName)'
       namespace: ${{ parameters.namespace }}
       manifests: |
-        k8s/${{ parameters.deploymentName }}.yaml   # ← changed to .yaml
+        k8s/${{ parameters.deploymentName }}.yaml
       containers: |
         $(containerRegistry)/${{ parameters.imageRepository }}:$(imageTag)
