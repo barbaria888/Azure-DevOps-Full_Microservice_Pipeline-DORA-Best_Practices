@@ -5,7 +5,7 @@ variables:
   - name: buildConfiguration
     value: 'Release'
   - name: dockerRegistryServiceConnection
-    value: 'ACR-Connection'           # <-- replace with your ACR service connection name
+    value: 'Azure Container Registry'           # <-- replace with your ACR service connection name
   - name: containerRegistry
     value: 'hardikarora.azurecr.io'       # <-- replace
   - name: aksServiceConnection
