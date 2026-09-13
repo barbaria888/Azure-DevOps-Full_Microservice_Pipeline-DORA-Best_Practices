@@ -21,13 +21,13 @@ variables:
   - template: templates/common/variables.yml
 
   - name: imageRepository
-    value: 'shoppingapi'
+    value: 'shoppingclient'
 
   - name: projectPath
-    value: 'Shopping/Shopping.API/Shopping.API.csproj'
+    value: 'Shopping/Shopping.Client/Shopping.Client.csproj'
 
   - name: dockerfilePath
-    value: 'Shopping/Shopping.API/Dockerfile'
+    value: 'Shopping/Shopping.Client/Dockerfile'
 
 
 stages:
