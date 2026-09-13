@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: shoppingclient
-          image: mehmetozkaya/shoppingclient:latest
+          image: hardikarora.acr.io/shoppingclient:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
