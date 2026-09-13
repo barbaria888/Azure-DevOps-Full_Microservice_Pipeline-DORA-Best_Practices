@@ -54,9 +54,8 @@ stages:
               tags: |
                 $(imageTag)
                 latest
-
   - stage: CD
-    displayName: 'Deploy to Azure Kubernetes Service'
+    displayName: 'Deploy to AKS'
     dependsOn: CI
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
     jobs:
@@ -70,6 +69,13 @@ stages:
             deploy:
               steps:
                 - checkout: self
+
+                # 1. Deploy shared infrastructure first
+                - template: templates/cd/deploy-infra.yml
+                  parameters:
+                    namespace: $(aksNamespace)
+
+                # 2. Deploy the actual service
                 - template: templates/cd/deploy-aks.yml
                   parameters:
                     imageRepository: $(imageRepository)
