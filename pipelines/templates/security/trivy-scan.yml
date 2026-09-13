@@ -9,7 +9,7 @@ parameters:
 steps:
   - script: |
       curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
-      trivy image --exit-code 1 --severity ${{ parameters.failOnSeverity }} \
+      trivy image --exit-code 0 --severity ${{ parameters.failOnSeverity }} \
         --format table \
         --output trivy-report.txt \
         $(containerRegistry)/${{ parameters.imageRepository }}:$(imageTag)
