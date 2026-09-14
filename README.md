@@ -3,7 +3,7 @@ Deploying .Net Microservices into Kubernetes, and moving deployments to the clou
 
 | Image | Status |
 | ------------- | ------------- |
-| Shopping Client |  [![Build Status](https://dev.azure.com/hardikaroracs22/Azure-DevOps-Full_Microservice_Pipeline/_apis/build/status/shoppingclient-pipeline?branchName=main)](https://dev.azure.com/hardikaroracs22//_build/latest?definitionId=14&branchName=main) |
+| Shopping Client | [![Build Status](https://dev.azure.com/hardikaroracs22/Azure-DevOps-Full_Microservice_Pipeline/_apis/build/status%2Fci-shopping-client?branchName=main&jobName=Build%2C%20Test%20%26%20Security%20Scan)](https://dev.azure.com/hardikaroracs22/Azure-DevOps-Full_Microservice_Pipeline/_build/latest?definitionId=4&branchName=main) |
 | Shopping API | [![Build Status](https://dev.azure.com/ezozkme/shopping/_apis/build/status/shoppingapi-pipeline?branchName=main)](https://dev.azure.com/ezozkme/shopping/_build/latest?definitionId=13&branchName=main) | | |
 
 
