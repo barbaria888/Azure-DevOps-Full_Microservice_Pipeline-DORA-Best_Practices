@@ -21,11 +21,11 @@ spec:
             - containerPort: 27017
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "250m"
+              memory: "256Mi" # increased this from 64 mi as it was getting oom killed 
+              cpu: "100m"  # decreased from 256m 
             limits:
-              memory: "128Mi"
-              cpu: "500m"
+              memory: "512Mi" # increased this from 64 mi as it was getting oom killed 
+              cpu: "250m" # decreased from 500m
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
