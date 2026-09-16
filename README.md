@@ -64,6 +64,7 @@ I moved the container registry from ACR to Docker Hub.
 
 This was not “ACR is bad”.  
 It was a conscious trade-off: for this scale, the operational and financial overhead of a private registry was not justified.
+I saved around 36.85% on my monthly Azure bill with single Architecture decision.
 
 I wrote about the migration and the cost impact here:  
 → [Right-sizing my microservice Kubernetes setup](https://hardik0811arora.hashnode.dev/right-sizing-my-microservice-based-kubernetes-deployment-escaping-acr-costs-and-fixing-oomkilled-pods)
