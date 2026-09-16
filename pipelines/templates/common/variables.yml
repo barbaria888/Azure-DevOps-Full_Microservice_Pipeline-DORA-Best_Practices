@@ -1,16 +1,19 @@
-# templates/common/variables.yml
 variables:
-  - name: dotnetVersion
-    value: '8.0.x'
   - name: buildConfiguration
     value: 'Release'
   - name: dockerRegistryServiceConnection
-    value: 'Azure Container Registry'           # <-- replace with your ACR service connection name
+    value: 'DockerHub Registry Connection'
   - name: containerRegistry
-    value: 'hardikarora.azurecr.io'       # <-- replace
-  - name: aksServiceConnection
-    value: 'AKS-Connection'           # <-- replace
-  - name: aksNamespace
-    value: 'application'                 # <-- replace or make parameter
+    value: 'docker.io'
+  - name: dockerHubUsername
+    value: 'hardik0811'
   - name: imageTag
     value: '$(Build.BuildId)'
+  - name: aksServiceConnection
+    value: 'AKS-Connection'
+  - name: aksResourceGroup
+    value: 'k8sgpt'
+  - name: aksClusterName
+    value: 'ASP-MicroserviceApplication'
+  - name: aksNamespace
+    value: 'application'
