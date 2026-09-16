@@ -5,9 +5,11 @@ variables:
   - name: buildConfiguration
     value: 'Release'
   - name: dockerRegistryServiceConnection
-    value: 'Azure Container Registry'           # <-- replace with your ACR service connection name
+    value: 'DockerHub Registry Connection'           # <-- replace with your ACR service connection name
   - name: containerRegistry
-    value: 'hardikarora.azurecr.io'       # <-- replace
+    value: 'docker.io'                          # <-- Standard Docker Hub registry URL
+  - name: dockerHubUsername
+    value: 'hardik0811'                        # <-- Your Docker Hub username (needed for repository paths)
   - name: aksServiceConnection
     value: 'AKS-Connection'           # <-- replace
   - name: aksNamespace
