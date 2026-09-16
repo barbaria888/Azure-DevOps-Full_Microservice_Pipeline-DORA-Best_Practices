@@ -7,7 +7,8 @@
 <img  height="60" alt="aks" src="https://github.com/user-attachments/assets/268b37ca-0b34-4745-becf-a54a9c7c3712" />
 </div>
 <br>
-> Building a reliable delivery path for containerized .NET microservices — with real cost constraints, actual failures, and the engineering trade-offs that came out of them.
+
+> Building a real delivery path for containerized .NET microservices : with real cost constraints, actual failures, and the engineering trade-offs that came out of them.
 
 This project started as a learning exercise built on top of the excellent [aspnetrun/run-devops](https://github.com/aspnetrun/run-devops) repository.  
 I kept the original application structure (Shopping API + Shopping Client + MongoDB), then rebuilt the entire delivery and deployment path around constraints I actually hit while running this on an **Azure for Students** subscription.
