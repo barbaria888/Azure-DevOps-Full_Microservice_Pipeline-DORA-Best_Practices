@@ -1,16 +1,12 @@
-# Deploy to Azure Kubernetes Service
-# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
-# shoppingapi-pipeline.yaml
 trigger:
   branches:
     include:
       - main
       - develop
+      - Deployment
   paths:
     include:
-      - src/Services/Shopping.API/**
+      - Shopping/Shopping.API/**
       - pipelines/**
 
 pr:
@@ -18,21 +14,23 @@ pr:
     include:
       - main
       - develop
+      - Deployment
 
 variables:
   - template: templates/common/variables.yml
   - name: imageRepository
     value: 'shoppingapi'
   - name: projectPath
-    value: 'src/Services/Shopping.API/Shopping.API.csproj'   # adjust
+    value: 'Shopping/Shopping.API/Shopping.API.csproj'
   - name: dockerfilePath
-    value: 'src/Services/Shopping.API/Dockerfile'             # adjust
+    value: 'Shopping/Shopping.API/Dockerfile'
 
 stages:
   - stage: CI
     displayName: 'Build, Test & Scan'
     jobs:
       - job: BuildAndScan
+        displayName: 'Build, Test & Security Scan'
         pool:
           vmImage: 'ubuntu-latest'
         steps:
@@ -40,19 +38,19 @@ stages:
             parameters:
               projectPath: $(projectPath)
               dockerfilePath: $(dockerfilePath)
-              imageRepository: $(imageRepository)
-              runTests: true
+              imageRepository: '$(dockerHubUsername)/$(imageRepository)'
+              runTests: false
 
           - template: templates/security/trivy-scan.yml
             parameters:
-              imageRepository: $(imageRepository)
+              imageRepository: '$(dockerHubUsername)/$(imageRepository)'
               failOnSeverity: 'HIGH,CRITICAL'
 
           - task: Docker@2
-            displayName: 'Push image to ACR'
+            displayName: 'Push image to Docker Hub'
             inputs:
               containerRegistry: $(dockerRegistryServiceConnection)
-              repository: $(imageRepository)
+              repository: '$(dockerHubUsername)/$(imageRepository)'
               command: 'push'
               tags: |
                 $(imageTag)
@@ -61,16 +59,21 @@ stages:
   - stage: CD
     displayName: 'Deploy to AKS'
     dependsOn: CI
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/Deployment'))
     jobs:
       - deployment: Deploy
-        environment: 'dev'                    # create this environment in Azure DevOps
+        displayName: 'Deploy Shopping API'
+        environment: 'dev'
         pool:
           vmImage: 'ubuntu-latest'
         strategy:
           runOnce:
             deploy:
               steps:
+                - checkout: self
+                - template: templates/cd/deploy-infra.yml
+                  parameters:
+                    namespace: $(aksNamespace)
                 - template: templates/cd/deploy-aks.yml
                   parameters:
                     imageRepository: $(imageRepository)

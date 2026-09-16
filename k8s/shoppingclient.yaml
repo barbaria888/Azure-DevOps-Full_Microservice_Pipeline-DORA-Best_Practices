@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: shoppingclient
-          image: mehmetozkaya/shoppingclient:latest
+          image: hardik0811/shoppingclient:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
@@ -41,7 +41,7 @@ kind: Service
 metadata:
   name: shoppingclient-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: shoppingclient
   ports:

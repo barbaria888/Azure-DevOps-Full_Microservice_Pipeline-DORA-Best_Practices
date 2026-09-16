@@ -1,5 +1,12 @@
-# Deploying .Net Microservices to Azure Kubernetes Services(AKS) and Automating with Azure DevOps
-Deploying .Net Microservices into Kubernetes, and moving deployments to the cloud Azure Kubernetes Services (AKS) with using Azure Container Registry (ACR) and how to Automating Deployments with Azure DevOps and GitHub.
+# .NET Microservices on AKS — CI/CD with Azure DevOps, Docker Hub & Trivy
+
+> Building a reliable delivery path for containerized .NET microservices — with real cost constraints, actual failures, and the engineering trade-offs that came out of them.
+
+This project started as a learning exercise built on top of the excellent [aspnetrun/run-devops](https://github.com/aspnetrun/run-devops) repository.  
+I kept the original application structure (Shopping API + Shopping Client + MongoDB), then rebuilt the entire delivery and deployment path around constraints I actually hit while running this on an **Azure for Students** subscription.
+
+The goal was never to build the most complex pipeline possible.  
+It was to understand what happens between a `git push` and a running pod — and to make every piece of that path work for real.
 
 
 | Image | Status |

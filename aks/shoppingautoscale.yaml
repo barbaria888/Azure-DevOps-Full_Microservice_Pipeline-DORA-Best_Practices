@@ -9,7 +9,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: shoppingapi-deployment
-  targetCPUUtilizationPercentage: 50 # target CPU utilization
+  targetCPUUtilizationPercentage: 2 # target CPU utilization
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
@@ -22,4 +22,4 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: shoppingclient-deployment
-  targetCPUUtilizationPercentage: 50 # target CPU utilization
+  targetCPUUtilizationPercentage: 2 # target CPU utilization
