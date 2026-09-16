@@ -17,40 +17,8 @@ It was to understand what happens between a `git push` and a running pod — and
 
 ## Architecture
 
-```mermaid
-flowchart TB
-    subgraph Source["Source Control"]
-        GH["GitHub (Deployment branch)"]
-    end
+<img src="https://github.com/barbaria888/Azure-DevOps-Full_Microservice_Pipeline-DORA-Best_Practices/blob/main/images/Gemini_Generated_Image_8eylpp8eylpp8eyl.png">
 
-    subgraph CI["CI — Build, Scan & Push"]
-        NET[".NET 8 Restore & Build"]
-        DOCKER["Docker Build (correct context)"]
-        TRIVY["Trivy Scan (soft-fail)"]
-        PUSH["Push to Docker Hub"]
-    end
-
-    subgraph Registry["Container Registry"]
-        DH1["hardik0811/shoppingapi"]
-        DH2["hardik0811/shoppingclient"]
-    end
-
-    subgraph CD["CD — Deploy to AKS"]
-        AKS["AKS (ASP-MicroserviceApplication)"]
-        INFRA["Mongo + ConfigMaps + Secrets + HPA"]
-        API["shoppingapi"]
-        CLIENT["shoppingclient"]
-        LB["LoadBalancer → External IP"]
-    end
-
-    GH --> NET --> DOCKER --> TRIVY --> PUSH
-    PUSH --> DH1 & DH2
-    DH1 --> API
-    DH2 --> CLIENT
-    AKS --> INFRA
-    AKS --> API & CLIENT
-    CLIENT --> LB
-```
 
 Two independent pipelines, each following the same pattern:
 
@@ -63,7 +31,9 @@ Two independent pipelines, each following the same pattern:
 1. Restore & build (.NET 8)
 2. Docker build with correct build context
 3. Trivy container scan (report published as artifact)
-4. Push to Docker Hub
+4. Push to Docker Hub/ACR(prior to optimisation)
+   
+<img src="https://github.com/barbaria888/Azure-DevOps-Full_Microservice_Pipeline-DORA-Best_Practices/blob/main/images/Pasted%20image%2020260917004746.png">
 
 **CD stage** (runs only on `main` and `Deployment`, with environment approval):
 1. Deploy shared infrastructure (MongoDB, ConfigMaps, Secrets, HPA)
