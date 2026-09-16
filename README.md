@@ -365,8 +365,8 @@ the best way to learn is to show your work — including the failures.
 What I care about is understanding the real trade-offs: 
 cost, complexity, security gates, and operational reality.
 
-If you're a senior engineer reading this — I would genuinely love your feedback.
-If you're someone learning the same things — I hope this helps. 
+If you're a senior engineer reading this - I would genuinely love your feedback.
+If you're someone learning the same things - I hope this helps. 
 Let's figure it out together.
 ```
 
