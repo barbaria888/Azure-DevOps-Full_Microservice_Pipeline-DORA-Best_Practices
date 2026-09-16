@@ -19,3 +19,4 @@ steps:
         k8s/mongo-configmap.yaml
         k8s/mongo.yaml
         k8s/shoppingapi-configmap.yaml
+        aks/shoppingautoscale.yaml
