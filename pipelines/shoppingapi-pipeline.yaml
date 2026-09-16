@@ -1,4 +1,3 @@
-# shoppingapi-pipeline.yaml
 trigger:
   branches:
     include:
@@ -72,11 +71,9 @@ stages:
             deploy:
               steps:
                 - checkout: self
-
                 - template: templates/cd/deploy-infra.yml
                   parameters:
                     namespace: $(aksNamespace)
-
                 - template: templates/cd/deploy-aks.yml
                   parameters:
                     imageRepository: $(imageRepository)
