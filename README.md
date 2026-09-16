@@ -2,9 +2,9 @@
 <div align="center">
 <img alt="azure-devops" src="https://logos-world.net/wp-content/uploads/2024/10/Azure-DevOps-Logo.png" height="60">
 <img alt="dotneticon" src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/microsoft-dot-net-icon.png" height="60">
-<img  height="60" alt="aks" src="https://github.com/user-attachments/assets/268b37ca-0b34-4745-becf-a54a9c7c3712" />
-<img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/trivy.png" height="60">
+<img alt="trivy" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/trivy.png" height="60">
 <img  height="60" alt="acr" src="https://github.com/user-attachments/assets/97fe2204-e743-4f85-adfd-a8aa81341419" />
+<img  height="60" alt="aks" src="https://github.com/user-attachments/assets/268b37ca-0b34-4745-becf-a54a9c7c3712" />
 </div>
 <br>
 > Building a reliable delivery path for containerized .NET microservices — with real cost constraints, actual failures, and the engineering trade-offs that came out of them.
