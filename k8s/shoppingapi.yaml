@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: shoppingapi
-          image: hardikarora.acr.io/shoppingapi:latest
+          image: hardik0811/shoppingapi:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80

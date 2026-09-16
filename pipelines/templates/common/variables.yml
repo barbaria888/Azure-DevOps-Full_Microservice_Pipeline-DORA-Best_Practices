@@ -5,7 +5,7 @@ variables:
   - name: buildConfiguration
     value: 'Release'
   - name: dockerRegistryServiceConnection
-    value: 'DockerHub Registry Connection'           # <-- replace with your ACR service connection name
+    value: 'DockerHub Registry Connection'           # Docker Hub service connection name
   - name: containerRegistry
     value: 'docker.io'                          # <-- Standard Docker Hub registry URL
   - name: dockerHubUsername

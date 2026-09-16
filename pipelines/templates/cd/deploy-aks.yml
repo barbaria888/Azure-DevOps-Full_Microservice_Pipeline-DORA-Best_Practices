@@ -23,4 +23,4 @@ steps:
       manifests: |
         k8s/${{ parameters.deploymentName }}.yaml
       containers: |
-        $(containerRegistry)/${{ parameters.imageRepository }}:$(imageTag)
+        $(dockerHubUsername)/${{ parameters.imageRepository }}:$(imageTag)
