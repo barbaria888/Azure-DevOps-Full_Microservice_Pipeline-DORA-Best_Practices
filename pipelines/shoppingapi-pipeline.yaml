@@ -1,14 +1,10 @@
-# Deploy to Azure Kubernetes Service
-# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
-
 # shoppingapi-pipeline.yaml
 trigger:
   branches:
     include:
       - main
       - develop
+      - Deployment
   paths:
     include:
       - Shopping/Shopping.API/**
@@ -19,32 +15,26 @@ pr:
     include:
       - main
       - develop
+      - Deployment
 
 variables:
   - template: templates/common/variables.yml
-
   - name: imageRepository
     value: 'shoppingapi'
-
   - name: projectPath
     value: 'Shopping/Shopping.API/Shopping.API.csproj'
-
   - name: dockerfilePath
     value: 'Shopping/Shopping.API/Dockerfile'
 
 stages:
   - stage: CI
     displayName: 'Build, Test & Scan'
-
     jobs:
       - job: BuildAndScan
         displayName: 'Build, Test & Security Scan'
-
         pool:
           vmImage: 'ubuntu-latest'
-
         steps:
-          # FIX 1: Pass the prefixed name here so the image tags with the Docker Hub prefix locally during compilation
           - template: templates/ci/build-dotnet.yml
             parameters:
               projectPath: $(projectPath)
@@ -52,18 +42,16 @@ stages:
               imageRepository: '$(dockerHubUsername)/$(imageRepository)'
               runTests: false
 
-          # CORRECT: Trivy now scans the locally built image name without pulling externally
           - template: templates/security/trivy-scan.yml
             parameters:
               imageRepository: '$(dockerHubUsername)/$(imageRepository)'
               failOnSeverity: 'HIGH,CRITICAL'
 
-          # CORRECT: The push command pushes the locally built image matching this exact name to Docker Hub
           - task: Docker@2
             displayName: 'Push image to Docker Hub'
             inputs:
-              containerRegistry: $(dockerRegistryServiceConnection) # Points to 'DockerHub-Connection' from variables.yml
-              repository: '$(dockerHubUsername)/$(imageRepository)'  # Combines username and repo name
+              containerRegistry: $(dockerRegistryServiceConnection)
+              repository: '$(dockerHubUsername)/$(imageRepository)'
               command: 'push'
               tags: |
                 $(imageTag)
@@ -72,7 +60,7 @@ stages:
   - stage: CD
     displayName: 'Deploy to AKS'
     dependsOn: CI
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/Deployment'))
     jobs:
       - deployment: Deploy
         displayName: 'Deploy Shopping API'
@@ -85,15 +73,13 @@ stages:
               steps:
                 - checkout: self
 
-                # 1. Deploy shared infrastructure first
                 - template: templates/cd/deploy-infra.yml
                   parameters:
                     namespace: $(aksNamespace)
 
-                # 2. Deploy the actual service
                 - template: templates/cd/deploy-aks.yml
                   parameters:
                     imageRepository: $(imageRepository)
                     deploymentName: 'shoppingapi'
                     containerName: 'shoppingapi'
-                    namespace: $(aksNamespace)  
+                    namespace: $(aksNamespace)

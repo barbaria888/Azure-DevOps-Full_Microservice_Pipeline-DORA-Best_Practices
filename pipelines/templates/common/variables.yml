@@ -15,13 +15,13 @@ variables:
   
   # ===== AKS Settings =====
   - name: aksServiceConnection
-    value: 'AKS-Connection'           # <-- replace
+    value: 'Azure-Resource-Svc-Connection-For-AKS'           # <-- replace
   - name: aksNamespace
-    value: 'application'                 # <-- replace or make parameter
+    value: 'default'                 # <-- replace or make parameter
   - name: imageTag
     value: '$(Build.BuildId)'
     # ADD THESE TWO
   - name: aksResourceGroup
-    value: 'your-aks-resource-group'            # e.g. 'rg-aks-dev'
+    value: 'k8sgpt'            # e.g. 'rg-aks-dev'
   - name: aksClusterName
-    value: 'your-aks-cluster-name'              # e.g. 'aks-dev'
+    value: 'ASP-MicroserviceApplication'              # e.g. 'aks-dev'
