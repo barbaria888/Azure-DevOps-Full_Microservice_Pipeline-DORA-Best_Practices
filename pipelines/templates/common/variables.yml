@@ -10,18 +10,18 @@ variables:
     value: 'docker.io'                          # <-- Standard Docker Hub registry URL
   - name: dockerHubUsername
     value: 'hardik0811'                        # <-- Your Docker Hub username (needed for repository paths)
-  - name: imageTag
-    value: '$(Build.BuildId)'
   
   
   
   # ===== AKS Settings =====
   - name: aksServiceConnection
-    value: 'Azure-Resource-Svc-Connection-For-AKS'           # <-- replace
+    value: 'AKS-Connection'           # <-- replace
   - name: aksNamespace
-    value: 'default'                 # <-- replace or make parameter
+    value: 'application'                 # <-- replace or make parameter
+  - name: imageTag
+    value: '$(Build.BuildId)'
     # ADD THESE TWO
   - name: aksResourceGroup
-    value: 'k8sgpt'            # e.g. 'rg-aks-dev'
+    value: 'your-aks-resource-group'            # e.g. 'rg-aks-dev'
   - name: aksClusterName
-    value: 'ASP-MicroserviceApplication'              # e.g. 'aks-dev'
+    value: 'your-aks-cluster-name'              # e.g. 'aks-dev'

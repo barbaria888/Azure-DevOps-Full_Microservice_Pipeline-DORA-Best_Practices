@@ -1,10 +1,8 @@
-# shoppingclient-pipeline.yaml
 trigger:
   branches:
     include:
       - main
       - develop
-      - Deployment
   paths:
     include:
       - Shopping/Shopping.Client/**
@@ -15,43 +13,51 @@ pr:
     include:
       - main
       - develop
-      - Deployment
 
 variables:
   - template: templates/common/variables.yml
+
   - name: imageRepository
     value: 'shoppingclient'
+
   - name: projectPath
     value: 'Shopping/Shopping.Client/Shopping.Client.csproj'
+
   - name: dockerfilePath
     value: 'Shopping/Shopping.Client/Dockerfile'
 
 stages:
   - stage: CI
     displayName: 'Build, Test & Scan'
+
     jobs:
       - job: BuildAndScan
         displayName: 'Build, Test & Security Scan'
+
         pool:
           vmImage: 'ubuntu-latest'
+
         steps:
+          # FIX 1: Pass the prefixed name here so the image is built with the Docker Hub prefix locally
           - template: templates/ci/build-dotnet.yml
             parameters:
               projectPath: $(projectPath)
               dockerfilePath: $(dockerfilePath)
-              imageRepository: '$(dockerHubUsername)/$(imageRepository)'
+              imageRepository: '$(dockerHubUsername)/$(imageRepository)' 
               runTests: false
 
+          # CORRECT: Trivy now scans the locally built image name
           - template: templates/security/trivy-scan.yml
             parameters:
               imageRepository: '$(dockerHubUsername)/$(imageRepository)'
               failOnSeverity: 'HIGH,CRITICAL'
 
+          # CORRECT: The push command pushes the locally built image matching this exact name
           - task: Docker@2
             displayName: 'Push image to Docker Hub'
             inputs:
-              containerRegistry: $(dockerRegistryServiceConnection)
-              repository: '$(dockerHubUsername)/$(imageRepository)'
+              containerRegistry: $(dockerRegistryServiceConnection) 
+              repository: '$(dockerHubUsername)/$(imageRepository)'  
               command: 'push'
               tags: |
                 $(imageTag)
@@ -60,7 +66,7 @@ stages:
   - stage: CD
     displayName: 'Deploy to AKS'
     dependsOn: CI
-    condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/Deployment'))
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
     jobs:
       - deployment: Deploy
         displayName: 'Deploy Shopping Client'
@@ -73,10 +79,12 @@ stages:
               steps:
                 - checkout: self
 
+                # 1. Deploy shared infrastructure first
                 - template: templates/cd/deploy-infra.yml
                   parameters:
                     namespace: $(aksNamespace)
 
+                # 2. Deploy the actual service
                 - template: templates/cd/deploy-aks.yml
                   parameters:
                     imageRepository: $(imageRepository)
