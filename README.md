@@ -1,4 +1,5 @@
 # .NET Microservices on AKS — CI/CD with Azure DevOps, Docker Hub & Trivy
+<img src="https://logos-world.net/wp-content/uploads/2024/10/Azure-DevOps-Logo.png" height="60">
 
 > Building a reliable delivery path for containerized .NET microservices — with real cost constraints, actual failures, and the engineering trade-offs that came out of them.
 
