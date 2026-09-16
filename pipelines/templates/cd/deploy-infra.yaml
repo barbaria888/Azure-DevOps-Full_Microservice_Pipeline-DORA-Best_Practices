@@ -11,8 +11,8 @@ steps:
       action: 'deploy'
       connectionType: 'azureResourceManager'
       azureSubscriptionConnection: $(aksServiceConnection)
-      azureResourceGroup: '$(aksResourceGroup)'
-      kubernetesCluster: '$(aksClusterName)'
+      azureResourceGroup: $(aksResourceGroup)
+      kubernetesCluster: $(aksClusterName)
       namespace: ${{ parameters.namespace }}
       manifests: |
         k8s/mongo-secret.yaml

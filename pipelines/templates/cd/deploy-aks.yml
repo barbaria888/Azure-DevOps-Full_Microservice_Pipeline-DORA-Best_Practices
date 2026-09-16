@@ -8,7 +8,7 @@ parameters:
     type: string
   - name: namespace
     type: string
-    default: 'application'
+    default: 'shopping'
 
 steps:
   - task: KubernetesManifest@1
@@ -17,8 +17,8 @@ steps:
       action: 'deploy'
       connectionType: 'azureResourceManager'
       azureSubscriptionConnection: $(aksServiceConnection)
-      azureResourceGroup: '$(aksResourceGroup)'
-      kubernetesCluster: '$(aksClusterName)'
+      azureResourceGroup: '$(aksResourceGroup)'      # add this variable
+      kubernetesCluster: '$(aksClusterName)'              # add this variable
       namespace: ${{ parameters.namespace }}
       manifests: |
         k8s/${{ parameters.deploymentName }}.yaml

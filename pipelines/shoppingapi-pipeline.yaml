@@ -1,3 +1,8 @@
+# Deploy to Azure Kubernetes Service
+# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+
 # shoppingapi-pipeline.yaml
 trigger:
   branches:
@@ -17,43 +22,53 @@ pr:
 
 variables:
   - template: templates/common/variables.yml
+
   - name: imageRepository
     value: 'shoppingapi'
+
   - name: projectPath
     value: 'Shopping/Shopping.API/Shopping.API.csproj'
+
   - name: dockerfilePath
     value: 'Shopping/Shopping.API/Dockerfile'
 
 stages:
   - stage: CI
     displayName: 'Build, Test & Scan'
+
     jobs:
       - job: BuildAndScan
         displayName: 'Build, Test & Security Scan'
+
         pool:
           vmImage: 'ubuntu-latest'
+
         steps:
+          # FIX 1: Pass the prefixed name here so the image tags with the Docker Hub prefix locally during compilation
           - template: templates/ci/build-dotnet.yml
             parameters:
               projectPath: $(projectPath)
               dockerfilePath: $(dockerfilePath)
-              imageRepository: $(imageRepository)
+              imageRepository: '$(dockerHubUsername)/$(imageRepository)'
               runTests: false
 
+          # CORRECT: Trivy now scans the locally built image name without pulling externally
           - template: templates/security/trivy-scan.yml
             parameters:
-              imageRepository: $(imageRepository)
+              imageRepository: '$(dockerHubUsername)/$(imageRepository)'
               failOnSeverity: 'HIGH,CRITICAL'
 
+          # CORRECT: The push command pushes the locally built image matching this exact name to Docker Hub
           - task: Docker@2
-            displayName: 'Push image to ACR'
+            displayName: 'Push image to Docker Hub'
             inputs:
-              containerRegistry: 'Azure Container Registry'
-              repository: $(imageRepository)
+              containerRegistry: $(dockerRegistryServiceConnection) # Points to 'DockerHub-Connection' from variables.yml
+              repository: '$(dockerHubUsername)/$(imageRepository)'  # Combines username and repo name
               command: 'push'
               tags: |
                 $(imageTag)
                 latest
+
   - stage: CD
     displayName: 'Deploy to AKS'
     dependsOn: CI

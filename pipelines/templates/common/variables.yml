@@ -10,6 +10,10 @@ variables:
     value: 'docker.io'                          # <-- Standard Docker Hub registry URL
   - name: dockerHubUsername
     value: 'hardik0811'                        # <-- Your Docker Hub username (needed for repository paths)
+  
+  
+  
+  # ===== AKS Settings =====
   - name: aksServiceConnection
     value: 'AKS-Connection'           # <-- replace
   - name: aksNamespace
