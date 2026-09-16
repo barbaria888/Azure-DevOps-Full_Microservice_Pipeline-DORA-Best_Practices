@@ -1,4 +1,3 @@
-# templates/cd/deploy-infra.yml
 parameters:
   - name: namespace
     type: string
@@ -13,6 +12,7 @@ steps:
       azureSubscriptionConnection: $(aksServiceConnection)
       azureResourceGroup: $(aksResourceGroup)
       kubernetesCluster: $(aksClusterName)
+      useClusterAdmin: true
       namespace: ${{ parameters.namespace }}
       manifests: |
         k8s/mongo-secret.yaml
