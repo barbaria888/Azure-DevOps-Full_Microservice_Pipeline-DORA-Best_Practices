@@ -68,7 +68,8 @@ Two independent pipelines, each following the same pattern:
 **CD stage** (runs only on `main` and `Deployment`, with environment approval):
 1. Deploy shared infrastructure (MongoDB, ConfigMaps, Secrets, HPA)
 2. Deploy the service to AKS via `KubernetesManifest@1`
-<img src="https://github.com/felicitousbeing999-h/Obsidian01/blob/main/Pasted%20image%2020260916191915.png">
+[<img src="https://github.com/felicitousbeing999-h/Obsidian01/blob/main/Pasted%20image%2020260916191822.png">](https://github.com/felicitousbeing999-h/Obsidian01/blob/main/Pasted%20image%2020260916200633.png)
+
 ---
 
 ## Engineering Decisions & Trade-Offs
