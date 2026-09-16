@@ -1,6 +1,12 @@
 # .NET Microservices on AKS — CI/CD with Azure DevOps, Docker Hub & Trivy
-<img src="https://logos-world.net/wp-content/uploads/2024/10/Azure-DevOps-Logo.png" height="60">
-
+<div align="center">
+<img alt="azure-devops" src="https://logos-world.net/wp-content/uploads/2024/10/Azure-DevOps-Logo.png" height="60">
+<img alt="dotneticon" src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/microsoft-dot-net-icon.png" height="60">
+<img  height="60" alt="aks" src="https://github.com/user-attachments/assets/268b37ca-0b34-4745-becf-a54a9c7c3712" />
+<img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/trivy.png" height="60">
+<img  height="60" alt="acr" src="https://github.com/user-attachments/assets/97fe2204-e743-4f85-adfd-a8aa81341419" />
+</div>
+<br>
 > Building a reliable delivery path for containerized .NET microservices — with real cost constraints, actual failures, and the engineering trade-offs that came out of them.
 
 This project started as a learning exercise built on top of the excellent [aspnetrun/run-devops](https://github.com/aspnetrun/run-devops) repository.  
@@ -268,6 +274,8 @@ run-devops/
 
 ---
 <img src="https://github.com/felicitousbeing999-h/Obsidian01/blob/main/Pasted%20image%2020260916192144.png">
+<img src="https://github.com/felicitousbeing999-h/Obsidian01/blob/main/Pasted%20image%2020260916195802.png">
+
 ## What I Deliberately Left Out (For Now)
 
 | Item | Reason |
@@ -282,7 +290,7 @@ run-devops/
 I prefer to get one path working cleanly before adding the next layer.
 
 ---
-<img src="https://github.com/felicitousbeing999-h/Obsidian01/blob/main/Pasted%20image%2020260916195802.png">
+
 
 ## DORA & Continuous Improvement
 
