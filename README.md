@@ -14,6 +14,8 @@ I kept the original application structure and overall picture, then rebuilt the 
 
 ## What this project actually does
 
+![Overall Picture of Repository](https://user-images.githubusercontent.com/1147445/105671396-b152f580-5ef3-11eb-8f3b-7f9f7c9c4d24.png)
+
 ```mermaid
 flowchart LR
     A[GitHub] --> B[Azure DevOps]
@@ -49,7 +51,7 @@ Both follow the same pattern:
 ## Why I changed things from the original
 
 The original project used Azure Container Registry and a fuller AKS deployment path.  
-That works well for enterprise demos. On a personal / student subscription it quickly became expensive and noisy.
+That works well for enterprise demos. On a personal / student subscription it quickly became expensive and noisy(the RBACs and EntraID configurations ) ).
 
 ### Cost decision
 
