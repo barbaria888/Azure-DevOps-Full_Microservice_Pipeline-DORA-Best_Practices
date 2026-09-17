@@ -1,25 +1,41 @@
+# we can define hpa for all 3 microservice like running deployments 
+# which enables us to independently scale one of
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: shoppingapi-hpa
 spec:
-  maxReplicas: 10 # define max replica count
-  minReplicas: 2  # define min replica count
+  maxReplicas: 10 # handles the most compute intensive workloads,so higher number of replicas are required
+  minReplicas: 2  # minimum of 2 are required
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: shoppingapi-deployment
-  targetCPUUtilizationPercentage: 2 # target CPU utilization
+  targetCPUUtilizationPercentage: 50 # target CPU utilization
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: shoppingclient-hpa
 spec:
-  maxReplicas: 10 # define max replica count
-  minReplicas: 3  # define min replica count
+  maxReplicas: 7 # the simple .NET frontend does work fine with lower replicas
+  minReplicas: 1  # define min replica count
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: shoppingclient-deployment
-  targetCPUUtilizationPercentage: 2 # target CPU utilization
+  targetCPUUtilizationPercentage: 60 # target CPU utilization
+---  
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: shoppingmongo-hpa
+spec:
+  maxReplicas: 10 # define max replica count,10 are required at scale, but more than 9 often cause node memory limits, so we might have to add nodes in the cluster as well
+  minReplicas: 1 # one pod runs at  minimum utilisation
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mongo-deployment
+  targetCPUUtilizationPercentage: 40 #  target CPU utilization
+  
